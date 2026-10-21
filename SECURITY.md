@@ -161,11 +161,6 @@ The vault automatically manages liquidity between idle USDC (held in the contrac
 2. **Protocol Withdrawals**: If idle USDC is insufficient, the vault automatically attempts to withdraw the required amount from the active protocol (e.g., Blend).
 3. **Partial Withdrawals**: If the protocol has insufficient liquidity (e.g., high utilization), the user receives all available USDC and **retains their remaining shares** in the vault. This ensures users are not forced into unfavorable liquidations during protocol-wide liquidity crunches.
 
-Protocol spend authority is limited to the amount of USDC available for a supply.
-Successful supplies clear leftover allowances, pool replacement revokes the
-retired pool's allowance, and emergency exits clear configured pool allowances.
-Approval lifetimes are capped at 500,000 ledgers; the legacy setter accepts zero
-for immediate expiry and short values for recovery operations.
 ### Withdrawal Priority
 
 Users can withdraw their USDC at any time without:
@@ -193,6 +188,7 @@ The `update_total_assets` function used by the AI agent has built-in guardrails:
 The AI agent can move funds between protocols via `rebalance()`, but is constrained:
 - **Rebalance Cooldown**: Consecutive rebalances are rate-limited by a configurable cooldown (`get_rebalance_cooldown` / `get_last_rebalance_ledger`), which bounds how quickly a compromised or malfunctioning agent can churn funds across protocols.
 - **No Direct Custody**: Rebalancing only moves funds between the vault's own positions in whitelisted pools; the agent cannot redirect funds to an arbitrary address.
+- **Protocol Spend Authority**: Approvals are limited to the USDC available for supply and capped at 500,000 ledgers. Successful supplies clear residual allowances, replaced pools are revoked, and emergency exits clear configured pool allowances. The legacy setter accepts zero for immediate expiry and short values for recovery operations.
 
 ### 4. Upgrade Risks
 

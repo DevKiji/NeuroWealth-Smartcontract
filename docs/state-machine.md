@@ -36,7 +36,7 @@ stateDiagram-v2
         state "UpgradeTimelock" as UT {
             [*] --> UpgradeIdle
             UpgradeIdle   --> UpgradeLocked   : schedule_upgrade(wasm_hash)\n[owner only, not paused]
-            UpgradeLocked --> UpgradeUnlocked : current_ledger ≥ effective_ledger\n(first allowed ledger; 17,280 ledgers ≈ 24 h elapsed)
+            UpgradeLocked --> UpgradeUnlocked : ledger ≥ effective_ledger\n(17,280 ledgers ≈ 24 h elapsed)
             UpgradeUnlocked --> UpgradeIdle   : execute_upgrade()\n[owner only, not paused]
             UpgradeLocked   --> UpgradeIdle   : cancel_upgrade()\n[owner only, works while paused]
             UpgradeUnlocked --> UpgradeIdle   : cancel_upgrade()\n[owner only]
@@ -45,13 +45,17 @@ stateDiagram-v2
         state "AgentUpdateTimelock" as AT {
             [*] --> AgentIdle
             AgentIdle         --> AgentPending  : update_agent(new_agent)\n[owner only]
-            AgentPending      --> AgentUnlocked : current_ledger ≥ effective_ledger\n(first allowed ledger; 17,280 ledgers ≈ 24 h elapsed)
+            AgentPending      --> AgentUnlocked : ledger ≥ effective_ledger\n(17,280 ledgers ≈ 24 h elapsed)
             AgentUnlocked     --> AgentIdle     : confirm_agent_update()\n[owner only]
             AgentPending      --> AgentIdle     : cancel_agent_update()\n[owner only]
             AgentUnlocked     --> AgentIdle     : cancel_agent_update()\n[owner only]
         }
     }
 ```
+
+For both agent rotations and upgrades, the expiry ledger is the first executable
+ledger (`current_ledger >= effective_ledger`). Calls before it fail. Canceling
+clears the pending proposal; scheduling a replacement starts a fresh full delay.
 
 ---
 

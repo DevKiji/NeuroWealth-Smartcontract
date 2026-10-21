@@ -62,13 +62,13 @@ Contract versions correspond to the `DataKey::Version` value stored on-chain.
 
 ### Changed
 
-- **Withdrawal claims across allocation changes (Issue #440):** Documented and covered the synchronous partial-withdrawal model: remaining claims stay in user shares across Blend/DEX reallocations, and a fully settled position cannot be paid twice.
 - Migrated weak `!events.is_empty()` test assertions to strict payload checks (Issue #333).
 - `deploy-devnet.sh` now writes `OWNER_ADDRESS` to `devnet-contracts.env` so
   `verify-deployment.sh` can run without missing-variable errors (Issue #298).
 - Documented the `TotalDeposits` vs `TotalAssets` design decision in `lib.rs`,
   `ARCHITECTURE.md`, and `test_total_assets_cap.rs` (Issue #299).
 - CHANGELOG.md tied to contract `Version` with PR template reminder (Issue #335).
+- **Withdrawal claims across allocation changes (Issue #440):** Documented and covered the synchronous partial-withdrawal model: remaining claims stay in user shares across Blend/DEX reallocations, and a fully settled position cannot be paid twice.
 
 ### Security
 

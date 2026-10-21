@@ -161,6 +161,11 @@ The vault automatically manages liquidity between idle USDC (held in the contrac
 2. **Protocol Withdrawals**: If idle USDC is insufficient, the vault automatically attempts to withdraw the required amount from the active protocol (e.g., Blend).
 3. **Partial Withdrawals**: If the protocol has insufficient liquidity (e.g., high utilization), the user receives all available USDC and **retains their remaining shares** in the vault. This ensures users are not forced into unfavorable liquidations during protocol-wide liquidity crunches.
 
+Protocol spend authority is limited to the amount of USDC available for a supply.
+Successful supplies clear leftover allowances, pool replacement revokes the
+retired pool's allowance, and emergency exits clear configured pool allowances.
+Approval lifetimes are capped at 500,000 ledgers; the legacy setter accepts zero
+for immediate expiry and short values for recovery operations.
 ### Withdrawal Priority
 
 Users can withdraw their USDC at any time without:
